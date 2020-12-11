@@ -67,9 +67,9 @@ class CollabFilterMeanOnly(AbstractBaseCollabFilterSGD):
             Scalar predicted ratings, one per provided example.
             Entry n is for the n-th pair of user_id, item_id values provided.
         '''
-        # TODO: Update with actual prediction logic
+        # DONE: Update with actual prediction logic
         N = user_id_N.size
-        yhat_N = ag_np.ones(N)
+        yhat_N = ag_np.ones(N) * mu
         return yhat_N
 
     def calc_loss_wrt_parameter_dict(self, param_dict, data_tuple):
@@ -85,10 +85,10 @@ class CollabFilterMeanOnly(AbstractBaseCollabFilterSGD):
         -------
         loss : float scalar
         '''
-        # TODO compute loss
+        # DONE: Compute loss
         y_N = data_tuple[2]
         yhat_N = self.predict(data_tuple[0], data_tuple[1], **param_dict)
-        loss_total = 0.0
+        loss_total = ag_np.mean(ag_np.square(y_N - yhat_N))
         return loss_total
 
     
@@ -106,4 +106,5 @@ if __name__ == '__main__':
 
     # Fit the model with SGD
     model.fit(train_tuple, valid_tuple)
+    print(f"Final mu = {model.param_dict}")
 
