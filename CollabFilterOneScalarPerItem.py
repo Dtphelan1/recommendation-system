@@ -47,12 +47,12 @@ class CollabFilterOneScalarPerItem(AbstractBaseCollabFilterSGD):
         '''
         random_state = self.random_state # inherited RandomState object
 
-        # TODO initialize all parameters to all zero arrays
-        # TODO fix the lines below to have right dimensionality
+        # DONE initialize all parameters to all zero arrays
+        # DONE fix the lines below to have right dimensionality
         self.param_dict = dict(
             mu=ag_np.zeros(1),
-            b_per_user=ag_np.zeros(1),
-            c_per_item=ag_np.zeros(1),
+            b_per_user=ag_np.zeros(n_users),
+            c_per_item=ag_np.zeros(n_items),
             )
 
     def predict(self, user_id_N, item_id_N,
@@ -74,9 +74,9 @@ class CollabFilterOneScalarPerItem(AbstractBaseCollabFilterSGD):
             Scalar predicted ratings, one per provided example.
             Entry n is for the n-th pair of user_id, item_id values provided.
         '''
-        # TODO: Update with actual prediction logic
+        # DONE: Update with actual prediction logic
         N = user_id_N.size
-        yhat_N = ag_np.ones(N)
+        yhat_N = ag_np.ones(N) * mu + b_per_user[user_id_N] + c_per_item[item_id_N]
         return yhat_N
 
     def calc_loss_wrt_parameter_dict(self, param_dict, data_tuple):
@@ -96,7 +96,7 @@ class CollabFilterOneScalarPerItem(AbstractBaseCollabFilterSGD):
         # TIP: use self.alpha to access regularization strength
         y_N = data_tuple[2]
         yhat_N = self.predict(data_tuple[0], data_tuple[1], **param_dict)
-        loss_total = 0.0
+        loss_total = ag_np.mean(ag_np.square(y_N - yhat_N))
         return loss_total
     
 
