@@ -88,7 +88,7 @@ class CollabFilterMeanOnly(AbstractBaseCollabFilterSGD):
         # DONE: Compute loss
         y_N = data_tuple[2]
         yhat_N = self.predict(data_tuple[0], data_tuple[1], **param_dict)
-        loss_total = ag_np.mean(ag_np.square(y_N - yhat_N))
+        loss_total = ag_np.sum(ag_np.square(y_N - yhat_N))
         return loss_total
 
     
